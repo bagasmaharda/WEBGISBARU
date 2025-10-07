@@ -1,0 +1,1024 @@
+/* ========================================
+   CSS UNTUK BAGIAN AKUN: Auth, Login, Register, 
+   Profile Dropdown, Settings, dan Riwayat Akun Tersimpan
+   ========================================
+   
+   Struktur:
+   1. Variabel Root Dasar (untuk tema akun)
+   2. User Profile Dropdown (navigasi akun)
+   3. Auth Modal Umum (login/register/forgot)
+   4. Form Auth Spesifik (login, register, password handling)
+   5. Settings Modal (pengelolaan akun tersimpan)
+   6. Payment History Modal (riwayat pemesanan akun)
+   7. Responsive & Utilitas (loading, messages, buttons)
+   
+   ======================================== */
+
+/* 1. VARIABEL ROOT DASAR (untuk tema default; bisa override dengan theme-alam, dll.) */
+:root {
+  /* Default Theme Colors (fokus pada elemen akun) */
+  --primary: #6366f1;
+  --primary-light: #818cf8;
+  --primary-dark: #4f46e5;
+  --secondary: #f59e0b;
+  --accent: #10b981;
+  --background: #0f0f23;
+  --surface: #1a1a2e;
+  --text: #ffffff;
+  --text-secondary: #a1a1aa;
+  --border: #374151;
+  --gradient-primary: linear-gradient(135deg, var(--primary), var(--primary-light));
+
+  /* Typography untuk form akun */
+  --font-primary: "Space Grotesk", sans-serif;
+  --font-secondary: "Inter", sans-serif;
+}
+
+/* 2. USER PROFILE DROPDOWN (navigasi akun setelah login) */
+.user-profile-dropdown {
+  position: relative;
+  margin-left: 1rem;
+}
+
+.profile-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.profile-avatar:hover {
+  border-color: var(--primary);
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 280px;
+  background: rgba(26, 26, 46, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  z-index: 1000;
+  margin-top: 0.5rem;
+}
+
+.dropdown-menu.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.user-info span:first-child {
+  display: block;
+  color: var(--text);
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.user-info span:last-child {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 0.5rem 0;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1rem 1.5rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+}
+
+.dropdown-item.logout {
+  color: #ef4444;
+}
+
+.dropdown-item.logout:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #f87171;
+}
+
+/* 3. AUTH MODAL UMUM (login, register, forgot password) */
+.auth-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 3000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.auth-modal.active {
+  display: flex;
+}
+
+.auth-modal-content {
+  background: var(--surface);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.auth-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.auth-header h2 {
+  font-family: var(--font-primary);
+  color: var(--text);
+}
+
+.close-auth {
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.close-auth:hover {
+  color: var(--primary);
+  transform: scale(1.1);
+}
+
+.auth-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+}
+
+.auth-tab {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 1rem 2rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-bottom: 2px solid transparent;
+  font-weight: 500;
+}
+
+.auth-tab.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  background: rgba(99, 102, 241, 0.05);
+}
+
+.auth-tab:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.auth-body {
+  padding: 2rem;
+}
+
+.auth-form {
+  display: none;
+}
+
+.auth-form.active {
+  display: block;
+}
+
+.auth-divider {
+  text-align: center;
+  margin: 2rem 0;
+  position: relative;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.auth-divider::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--border);
+  z-index: -1;
+}
+
+.auth-divider span {
+  background: var(--surface);
+  padding: 0 1rem;
+}
+
+.social-login {
+  display: flex;
+  gap: 1rem;
+}
+
+.social-btn {
+  flex: 1;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+
+.social-btn:hover {
+  border-color: var(--primary);
+  background: rgba(99, 102, 241, 0.1);
+  transform: translateY(-2px);
+}
+
+.social-btn.google:hover {
+  border-color: #4285f4;
+  background: rgba(66, 133, 244, 0.1);
+}
+
+.social-btn.facebook:hover {
+  border-color: #1877f2;
+  background: rgba(24, 119, 242, 0.1);
+}
+
+.social-icon {
+  font-size: 1.2rem;
+}
+
+/* Forgot Password Specific Styles (bagian dari auth) */
+.forgot-password-content {
+  text-align: center;
+}
+
+.forgot-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 0 10px var(--primary));
+}
+
+.forgot-password-content h3 {
+  font-family: var(--font-primary);
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+
+.forgot-password-content p {
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.forgot-password {
+  color: var(--primary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.forgot-password:hover {
+  text-shadow: 0 0 10px var(--primary);
+}
+
+/* 4. FORM AUTH SPESIFIK (login, register, password handling) */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  color: var(--text);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.password-input {
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.toggle-password:hover {
+  color: var(--primary);
+}
+
+.password-strength {
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.strength-bar {
+  flex: 1;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.strength-fill {
+  height: 100%;
+  width: 0%;
+  background: #ef4444;
+  transition: all 0.3s ease;
+}
+
+.strength-fill.weak {
+  width: 25%;
+  background: #ef4444;
+}
+
+.strength-fill.fair {
+  width: 50%;
+  background: #f59e0b;
+}
+
+.strength-fill.good {
+  width: 75%;
+  background: #3b82f6;
+}
+
+.strength-fill.strong {
+  width: 100%;
+  background: #10b981;
+}
+
+.strength-text {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  min-width: 60px;
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.checkbox-label input[type="checkbox"] {
+  display: none;
+}
+
+.checkmark {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkmark {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkmark::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.auth-btn {
+  width: 100%;
+  padding: 1rem 2rem;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.auth-btn.primary {
+  background: var(--gradient-primary);
+  color: white;
+}
+
+.auth-btn.secondary {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border);
+  color: var(--text);
+  margin-top: 1rem;
+}
+
+.auth-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.auth-btn.primary:hover {
+  box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+}
+
+/* 5. SETTINGS MODAL (pengelolaan akun tersimpan: profil, security, preferences) */
+.settings-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+}
+
+.settings-tab {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 1rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-bottom: 2px solid transparent;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.settings-tab.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  background: rgba(99, 102, 241, 0.05);
+}
+
+.settings-body {
+  padding: 2rem;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.settings-form {
+  display: none;
+}
+
+.settings-form.active {
+  display: block;
+}
+
+.profile-avatar-section {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 15px;
+  border: 1px solid var(--border);
+}
+
+.avatar-preview {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.avatar-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.security-options {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+
+.security-options h4 {
+  color: var(--text);
+  margin-bottom: 1.5rem;
+  font-family: var(--font-primary);
+}
+
+.security-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  margin-bottom: 1rem;
+}
+
+.option-info strong {
+  display: block;
+  color: var(--text);
+  margin-bottom: 0.3rem;
+}
+
+.option-info p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+
+
+/* ========================================
+   CSS UNTUK BAGIAN AKUN: Auth, Login, Register, 
+   Profile Dropdown, Settings, dan Riwayat Akun Tersimpan
+   (Kelanjutan dari Respons Sebelumnya)
+   ========================================
+   
+   Struktur Kelanjutan:
+   6. Payment History Modal (riwayat pemesanan akun tersimpan)
+   7. Responsive Design & Utilitas (loading, messages, buttons, responsive auth)
+   
+   ======================================== */
+
+/* 6. PAYMENT HISTORY MODAL (riwayat pemesanan terkait akun tersimpan) */
+.payment-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 3000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.payment-modal.active {
+  display: flex;
+}
+
+.payment-modal-content {
+  background: var(--surface);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+}
+
+.payment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.payment-header h2 {
+  font-family: var(--font-primary);
+  color: var(--text);
+}
+
+.close-payment {
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.history-filters {
+  display: flex;
+  gap: 1rem;
+  padding: 2rem;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.history-filters .filter-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.history-filters .filter-btn.active,
+.history-filters .filter-btn:hover {
+  background: var(--gradient-primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+.history-list {
+  padding: 2rem;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+
+.history-item:hover {
+  border-color: var(--primary);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.history-info {
+  flex: 1;
+}
+
+.history-info h4 {
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+.history-info p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 0.2rem;
+}
+
+.history-status {
+  text-align: center;
+  margin-right: 1rem;
+}
+
+.status {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.status.completed {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+}
+
+.status.pending {
+  background: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+}
+
+.status.cancelled {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.history-total {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.history-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.btn-small {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.btn-small.primary {
+  background: var(--gradient-primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+.btn-small:hover {
+  border-color: var(--primary);
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--primary);
+}
+
+.btn-small.primary:hover {
+  background: var(--primary-light);
+  color: white;
+}
+
+/* 7. RESPONSIVE DESIGN & UTILITAS (loading states, messages, buttons, responsive auth) */
+
+/* Loading States (untuk tombol auth/login/register) */
+.auth-btn.loading {
+  opacity: 0.7;
+  cursor: not-allowed;
+  position: relative;
+}
+
+.auth-btn.loading::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Success/Error Messages (untuk feedback login/register) */
+.auth-message {
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.auth-message.success {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #10b981;
+}
+
+.auth-message.error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
+/* Buttons Umum (untuk akun: primary, secondary, small) */
+.btn-primary,
+.btn-secondary {
+  padding: 1rem 2rem;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.btn-primary {
+  background: var(--gradient-primary);
+  color: white;
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.btn-primary:hover,
+.btn-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Custom Scrollbar (untuk modal panjang seperti history/settings) */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gradient-primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-light);
+}
+
+/* Responsive Design Khusus untuk Auth, Settings, dan History (mobile-friendly) */
+@media (max-width: 768px) {
+  /* Auth Modal Responsive */
+  .auth-modal {
+    padding: 1rem;
+  }
+
+  .auth-modal-content {
+    max-height: 95vh;
+  }
+
+  .auth-header {
+    padding: 1.5rem;
+  }
+
+  .auth-body {
+    padding: 1.5rem;
+  }
+
+  .social-login {
+    flex-direction: column;
+  }
+
+  .form-options {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* User Profile Dropdown Responsive */
+  .user-profile-dropdown {
+    margin-left: 0.5rem;
+  }
+
+  .dropdown-menu {
+    width: 250px;
+    right: -50px;
+  }
+
+  /* Settings Modal Responsive */
+  .profile-avatar-section {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .avatar-actions {
+    flex-direction: row;
+  }
+
+  .security-option {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  /* Payment History Responsive */
+  .payment-modal {
+    padding: 1rem;
+  }
+
+  .payment-modal-content {
+    max-height: 95vh;
+  }
+
+  .history-item {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .history-actions {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  /* Umum: Adjust padding dan flex untuk mobile */
+  .auth-tabs,
+  .settings-tabs {
+    flex-direction: column;
+  }
+
+  .auth-tab,
+  .settings-tab {
+    border-bottom: none;
+    border-right: 2px solid transparent;
+  }
+
+  .auth-tab.active,
+  .settings-tab.active {
+    border-right-color: var(--primary);
+  }
+}
+
+/* ========================================
+   AKHIR CSS BAGIAN AKUN
+   ========================================
+   
+   Catatan:
+   - Ini mencakup semua styles relevan untuk auth/login/register/akun dari file asli.
+   - Untuk integrasi: Link ke HTML akun (dari respons sebelumnya) dengan <link rel="stylesheet" href="auth-styles.css">.
+   - Test: Buka HTML di browser, klik login → Modal harus tampil dengan tema dark/modern. Cek responsive di mobile view (F12 > Toggle device).
+   - Jika perlu tambah (e.g., animasi khusus atau override theme), atau modifikasi (e.g., light mode), beri tahu!
+   ======================================== */

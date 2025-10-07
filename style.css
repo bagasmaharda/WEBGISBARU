@@ -1,0 +1,555 @@
+/* Maps.css - Cyberpunk Clean UI (Lengkap - Versi Full) */
+:root {
+  --neon-blue: #6366f1;
+  --neon-red: #ef4444;
+  --neon-purple: #a855f7;
+  --neon-green: #10b981;
+  --neon-orange: #f59e0b;
+  --map-bg: #0a0a0f;
+  --sidebar-bg: rgba(15, 15, 35, 0.95);
+  --panel-bg: rgba(10, 10, 15, 0.98);
+  --text-primary: #ffffff;
+  --text-secondary: #a1a1aa;
+  --border-neon: 1px solid var(--neon-blue);
+}
+
+.light-theme {
+  --map-bg: #f8fafc;
+  --sidebar-bg: rgba(248, 250, 252, 0.95);
+  --panel-bg: rgba(255, 255, 255, 0.98);
+  --neon-blue: #4f46e5;
+  --text-primary: #111827;
+  --text-secondary: #475569;
+  --border-neon: 1px solid #cbd5e1;
+}
+
+.maps-section {
+  min-height: 100vh;
+  background: var(--map-bg);
+  padding: 4rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.maps-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  height: 80vh;
+  display: flex;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(99, 102, 241, 0.2);
+  position: relative;
+}
+
+/* Sidebar - Clean & Collapsible */
+.sidebar {
+  width: 320px;
+  background: var(--sidebar-bg);
+  backdrop-filter: blur(20px);
+  border-right: 2px solid var(--neon-blue);
+  padding: 2rem;
+  transition: transform 0.3s ease;
+  z-index: 1001;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 0 30px rgba(99, 102, 241, 0.1);
+}
+
+.sidebar.collapsed {
+  transform: translateX(-100%);
+}
+
+.sidebar-toggle {
+  position: absolute;
+  top: 1rem;
+  right: -3rem;
+  background: var(--neon-blue);
+  color: var(--text-primary);
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.2rem;
+  box-shadow: 0 0 15px var(--neon-blue);
+  transition: all 0.3s ease;
+  z-index: 1002;
+}
+
+.sidebar-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 25px var(--neon-blue);
+}
+
+/* Sections in Sidebar */
+.map-switch-section, .filter-section, .routing-section {
+  margin-bottom: 2.5rem;
+}
+
+.map-switch-section h3, .filter-section h3, .routing-section h3 {
+  color: var(--neon-purple);
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 10px var(--neon-purple);
+}
+
+/* Base Map Switch */
+.map-switch-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.map-switch-btn {
+  flex: 1;
+  background: rgba(99, 102, 241, 0.2);
+  border: 1px solid var(--neon-blue);
+  color: var(--text-primary);
+  padding: 0.7rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.map-switch-btn:hover, .map-switch-btn.active {
+  background: var(--neon-blue);
+  box-shadow: 0 0 15px var(--neon-blue);
+  transform: translateY(-2px);
+}
+
+/* Filter Buttons */
+.filter-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-btn {
+  background: rgba(99, 102, 241, 0.2);
+  border: 1px solid var(--neon-blue);
+  color: var(--text-primary);
+  padding: 0.8rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.filter-btn:hover, .filter-btn.active {
+  background: var(--neon-blue);
+  box-shadow: 0 0 15px var(--neon-blue);
+  transform: translateX(5px);
+}
+
+/* Routing Inputs */
+.routing-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.routing-inputs input, .routing-inputs select {
+  padding: 0.8rem;
+  border: 1px solid var(--neon-blue);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.routing-inputs input::placeholder {
+  color: var(--text-secondary);
+}
+
+#get-route {
+  background: linear-gradient(135deg, var(--neon-red), #dc2626);
+  border: none;
+  padding: 0.8rem;
+  border-radius: 10px;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+#get-route:hover {
+  box-shadow: 0 0 15px var(--neon-red);
+  transform: translateY(-2px);
+}
+
+/* Map Container */
+.map-container {
+  flex: 1;
+  height: 100%;
+  position: relative;
+}
+
+/* Leaflet Custom - Cyberpunk */
+.leaflet-container {
+  background: var(--map-bg);
+  border-radius: 0 20px 20px 0;
+  height: 100%;
+}
+
+.leaflet-tile-pane img {
+  filter: hue-rotate(200deg) saturate(1.5) brightness(0.8); /* Efek neon gelap */
+}
+
+/* Custom Markers - Neon Glowing */
+.custom-marker {
+  background: var(--neon-blue);
+  width: 20px;
+  height: 20px;
+  border-radius: 50% 50% 50% 0;
+  border: 2px solid white;
+  transform: rotate(-45deg);
+  box-shadow: 0 0 10px var(--neon-blue);
+  animation: glow 2s infinite alternate;
+  transition: box-shadow 0.3s ease;
+}
+
+@keyframes glow {
+  from { box-shadow: 0 0 10px var(--neon-blue); }
+  to { box-shadow: 0 0 20px var(--neon-blue), 0 0 30px var(--neon-blue); }
+}
+
+.custom-marker:hover {
+  box-shadow: 0 0 30px var(--neon-blue), 0 0 40px var(--neon-blue) !important;
+  transform: scale(1.2) !important;
+}
+
+/* Layers: Jalan neon */
+.leaflet-layer path {
+  stroke: var(--neon-purple);
+  stroke-width: 2;
+  fill: none;
+  filter: drop-shadow(0 0 5px var(--neon-purple));
+}
+
+/* Pop-up Minimalist */
+.leaflet-popup-content-wrapper {
+  background: var(--sidebar-bg);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--neon-blue);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+  transition: all 0.3s ease;
+}
+
+.leaflet-popup-content {
+  margin: 10px;
+  color: var(--text-primary);
+  font-family: "Inter", sans-serif;
+}
+
+.leaflet-popup-content img {
+  width: 100px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 5px;
+  margin-bottom: 0.5rem;
+}
+
+.leaflet-popup-content h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+  color: var(--neon-purple);
+}
+
+.leaflet-popup-content p {
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+}
+
+.leaflet-popup-content button {
+  background: var(--neon-blue);
+  color: white;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 0.5rem;
+  transition: background 0.3s;
+}
+
+.leaflet-popup-content button:hover {
+  background: var(--neon-purple);
+  box-shadow: 0 0 10px var(--neon-purple);
+}
+
+/* Fullscreen Panel (Slide dari Kiri) */
+.fullscreen-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 400px;
+  height: 100vh;
+  background: var(--panel-bg);
+  backdrop-filter: blur(20px);
+  border-right: 2px solid var(--neon-blue);
+  z-index: 1003;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+  padding: 2rem;
+  box-shadow: 0 0 50px rgba(99, 102, 241, 0.3);
+}
+
+.fullscreen-panel.active {
+  transform: translateX(0);
+}
+
+.panel-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--neon-red);
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.5rem;
+  box-shadow: 0 0 10px var(--neon-red);
+  transition: all 0.3s ease;
+}
+
+.panel-close:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px var(--neon-red);
+}
+
+.panel-content {
+  padding-top: 3rem;
+}
+
+.panel-content h2 {
+  color: var(--neon-purple);
+  font-family: "Space Grotesk", sans-serif;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 10px var(--neon-purple);
+}
+
+.rating {
+  color: var(--neon-orange);
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.category {
+  color: var(--neon-green);
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.description {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.description p {
+  margin: 0.5rem 0;
+}
+
+.reviews {
+  margin-bottom: 2rem;
+}
+
+.reviews h4 {
+  color: var(--neon-blue);
+  margin-bottom: 1rem;
+}
+
+.reviews div {
+  max-height: 200px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.reviews p {
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  background: rgba(99, 102, 241, 0.1);
+  border-radius: 5px;
+  border-left: 3px solid var(--neon-blue);
+}
+
+.route-btn {
+  background: linear-gradient(135deg, var(--neon-green), #059669);
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 100%;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.route-btn:hover {
+  box-shadow: 0 0 15px var(--neon-green);
+  transform: translateY(-2px);
+}
+
+/* Photo Slider in Panel */
+.photo-slider {
+  position: relative;
+  height: 300px;
+  overflow: hidden;
+  border-radius: 15px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+}
+
+.slider-images img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.5s ease;
+}
+
+.slider-dots {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.slider-dots .dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--text-secondary);
+  margin: 0 0.3rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.slider-dots .dot.active {
+  background: var(--neon-blue);
+  box-shadow: 0 0 10px var(--neon-blue);
+  transform: scale(1.2);
+}
+
+/* Routing Visual (Garis Neon Animasi) */
+.leaflet-routing-line {
+  stroke: var(--neon-red);
+  stroke-width: 5;
+  opacity: 0.8;
+  animation: neonPulse 2s infinite;
+}
+
+@keyframes neonPulse {
+  0%, 100% { stroke: var(--neon-red); opacity: 0.8; }
+  50% { stroke: var(--neon-blue); opacity: 1; box-shadow: 0 0 10px var(--neon-blue); }
+}
+
+/* Estimasi Info (Popup saat routing) */
+.route-info {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--sidebar-bg);
+  padding: 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--neon-blue);
+  color: var(--text-primary);
+  z-index: 1000;
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+  font-size: 0.9rem;
+  min-width: 150px;
+  text-align: center;
+}
+
+.route-info h4 {
+  margin: 0 0 0.5rem 0;
+  color: var(--neon-green);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .maps-container {
+    flex-direction: column;
+    height: 90vh;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1002;
+    transform: translateX(-100%);
+    border-right: none;
+    border-bottom: 2px solid var(--neon-blue);
+  }
+
+  .sidebar.collapsed {
+    transform: translateX(0); /* Overlay full di mobile */
+  }
+
+  .sidebar-toggle {
+    right: 1rem;
+    top: 1rem;
+    z-index: 1003;
+  }
+
+  .map-switch-buttons, .filter-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .map-switch-btn, .filter-btn {
+    width: 100%;
+    text-align: center;
+    padding: 1rem;
+    font-size: 1rem; /* Lebih besar untuk touch */
+  }
+
+  .fullscreen-panel {
+    width: 100%;
+    left: 0;
+    padding: 1rem;
+  }
+
+  .panel-content {
+    padding-top: 2rem;
+  }
+
+  .photo-slider {
+    height: 250px;
+  }
+
+  .routing-inputs input, .routing-inputs select, #get-route {
+    font-size: 1rem;
+    padding: 1rem;
+  }
+
+  .route-info {
+    top: 5px;
+    right: 5px;
+    left: 5px;
+    bottom: auto;
+    min-width: auto;
+    padding: 0.8rem;
+    font-size: 0.8rem;
+  }
+  .leaflet-popup-content {
+    min-width: 250px; /* Lebih lebar di mobile */
+  }
+  .custom-marker {
+    width: 30px;
+    height: 30px; /* Icon lebih besar di mobile */
+  }
+  /* Hilangkan sidebar toggle saat collapsed di mobile untuk full peta */
+  .sidebar.collapsed + .map-container {
+    height: 100vh;
+  }
+}

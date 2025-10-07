@@ -1,0 +1,514 @@
+
+     Payment Section 
+    <section id="payment" class="payment-section">
+        <div class="payment-content">
+            <h2 class="section-title">Sistem Pembayaran Wisata</h2>
+            <p class="payment-description">
+                Pesan tiket wisata dengan mudah dan aman. Nikmati berbagai pilihan destinasi dengan harga terjangkau.
+            </p>
+            
+            <div class="payment-features">
+                <div class="feature-card">
+                    <div class="feature-icon">🎫</div>
+                    <h3>Pesan Tiket Online</h3>
+                    <p>Pesan tiket destinasi wisata favorit Anda dengan mudah</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💳</div>
+                    <h3>Pembayaran Aman</h3>
+                    <p>Berbagai metode pembayaran yang aman dan terpercaya</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>E-Ticket Digital</h3>
+                    <p>Dapatkan e-ticket langsung di ponsel Anda</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎁</div>
+                    <h3>Promo Menarik</h3>
+                    <p>Nikmati berbagai promo dan diskon khusus</p>
+                </div>
+            </div>
+            
+            <div class="popular-destinations">
+                <h3>Destinasi Populer</h3>
+                <div class="destination-grid">
+                    <div class="destination-card" onclick="selectDestination('kawah-putih')">
+                        <img src="public/kawah-putih-crater-lake.jpg" alt="Kawah Putih">
+                        <div class="destination-info">
+                            <h4>Kawah Putih</h4>
+                            <div class="destination-price">Rp 25.000</div>
+                            <div class="destination-rating">⭐ 4.5 (234 ulasan)</div>
+                        </div>
+                    </div>
+                    <div class="destination-card" onclick="selectDestination('gedung-sate')">
+                        <img src="public/gedung-sate-bandung-architecture.jpg" alt="Gedung Sate">
+                        <div class="destination-info">
+                            <h4>Gedung Sate</h4>
+                            <div class="destination-price">Gratis</div>
+                            <div class="destination-rating">⭐ 4.3 (189 ulasan)</div>
+                        </div>
+                    </div>
+                    <div class="destination-card" onclick="selectDestination('trans-studio')">
+                        <img src="public/trans-studio-bandung-theme-park.jpg" alt="Trans Studio">
+                        <div class="destination-info">
+                            <h4>Trans Studio Bandung</h4>
+                            <div class="destination-price">Rp 50.000</div>
+                            <div class="destination-rating">⭐ 4.4 (345 ulasan)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="payment-actions">
+                <button class="payment-cta-btn" onclick="openPaymentModal()">
+                    🎫 Mulai Pesan Tiket
+                </button>
+                <button class="history-btn" onclick="showPaymentHistory()">
+                    📋 Riwayat Pemesanan
+                </button>
+            </div>
+        </div>
+    </section>
+
+     Fullscreen Map Modal 
+    <div id="fullscreen-modal" class="fullscreen-modal">
+        <div class="fullscreen-header">
+            <h2>Peta Bandung</h2>
+            <button class="close-fullscreen" onclick="closeFullscreenMap()">×</button>
+        </div>
+        <div class="fullscreen-content">
+            <div class="fullscreen-sidebar">
+                <div class="sidebar-search">
+                    <input type="text" placeholder="Cari lokasi..." class="sidebar-search-input">
+                </div>
+                <div class="sidebar-filters">
+                    <button class="sidebar-filter active" data-filter="all">Semua</button>
+                    <button class="sidebar-filter" data-filter="alam">🌿 Alam</button>
+                    <button class="sidebar-filter" data-filter="budaya">🏛️ Budaya</button>
+                    <button class="sidebar-filter" data-filter="rekreasi">🎢 Rekreasi</button>
+                    <button class="sidebar-filter" data-filter="kuliner">🍜 Kuliner</button>
+                </div>
+                <div class="sidebar-sorting">
+                    <select class="sort-select">
+                        <option value="popular">Terpopuler</option>
+                        <option value="rating">Rating Tertinggi</option>
+                        <option value="distance">Terdekat</option>
+                    </select>
+                </div>
+            </div>
+            <div id="fullscreen-map" class="fullscreen-map"></div>
+        </div>
+    </div>
+
+     <!-- Added fullscreen location modal -->
+    <div id="location-fullscreen-modal" class="fullscreen-modal">
+        <div class="fullscreen-header">
+            <h2 id="fullscreen-location-title">Detail Lokasi</h2>
+            <button class="close-fullscreen" onclick="closeLocationFullscreen()">×</button>
+        </div>
+        <div class="location-fullscreen-content">
+            <div class="fullscreen-gallery">
+                <div class="main-image">
+                    <img id="fullscreen-main-image" src="/placeholder.svg" alt="">
+                </div>
+                <div class="thumbnail-gallery">
+                    <div class="thumbnail active">
+                        <img src="public/kawah-putih-crater-lake.jpg" alt="">
+                    </div>
+                    <div class="thumbnail">
+                        <img src="/placeholder.svg?height=80&width=120" alt="">
+                    </div>
+                    <div class="thumbnail">
+                        <img src="/placeholder.svg?height=80&width=120" alt="">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="fullscreen-info">
+                <div class="location-header">
+                    <h1 id="fullscreen-location-name"></h1>
+                    <div class="rating-detailed">
+                        <div class="stars-large">
+                            <span id="fullscreen-stars"></span>
+                            <span id="fullscreen-rating"></span>
+                        </div>
+                        <span class="review-count">Berdasarkan 234 ulasan</span>
+                    </div>
+                </div>
+                
+                <div class="location-tabs">
+                    <button class="tab-btn active" onclick="showTab('overview')">Ringkasan</button>
+                    <button class="tab-btn" onclick="showTab('reviews')">Ulasan</button>
+                    <button class="tab-btn" onclick="showTab('photos')">Foto</button>
+                </div>
+                
+                <div class="tab-content">
+                    <div id="overview-tab" class="tab-panel active">
+                        <p id="fullscreen-description"></p>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <strong>Kategori</strong>
+                                <span id="fullscreen-category"></span>
+                            </div>
+                            <div class="info-item">
+                                <strong>Alamat</strong>
+                                <span id="fullscreen-address"></span>
+                            </div>
+                            <div class="info-item">
+                                <strong>Jam Operasional</strong>
+                                <span id="fullscreen-hours"></span>
+                            </div>
+                            <div class="info-item">
+                                <strong>Kontak</strong>
+                                <span id="fullscreen-contact"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="reviews-tab" class="tab-panel">
+                        <div class="reviews-summary">
+                            <div class="rating-breakdown">
+                                <div class="rating-bar">
+                                    <span>5⭐</span>
+                                    <div class="bar"><div class="fill" style="width: 60%"></div></div>
+                                    <span>60%</span>
+                                </div>
+                                <div class="rating-bar">
+                                    <span>4⭐</span>
+                                    <div class="bar"><div class="fill" style="width: 25%"></div></div>
+                                    <span>25%</span>
+                                </div>
+                                <div class="rating-bar">
+                                    <span>3⭐</span>
+                                    <div class="bar"><div class="fill" style="width: 10%"></div></div>
+                                    <span>10%</span>
+                                </div>
+                                <div class="rating-bar">
+                                    <span>2⭐</span>
+                                    <div class="bar"><div class="fill" style="width: 3%"></div></div>
+                                    <span>3%</span>
+                                </div>
+                                <div class="rating-bar">
+                                    <span>1⭐</span>
+                                    <div class="bar"><div class="fill" style="width: 2%"></div></div>
+                                    <span>2%</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="reviews-list">
+                            <div class="review-item">
+                                <div class="reviewer">
+                                    <div class="avatar">A</div>
+                                    <div class="reviewer-info">
+                                        <strong>Ahmad Rizki</strong>
+                                        <span>⭐⭐⭐⭐⭐</span>
+                                    </div>
+                                </div>
+                                <p>Tempat yang sangat indah dan menakjubkan! Air kawahnya berwarna putih kehijauan yang unik. Sangat recommended untuk dikunjungi.</p>
+                                <span class="review-date">2 minggu yang lalu</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="photos-tab" class="tab-panel">
+                        <div class="photos-grid">
+                            <div class="photo-item">
+                                <img src="/placeholder.svg?height=200&width=300" alt="">
+                            </div>
+                            <div class="photo-item">
+                                <img src="/placeholder.svg?height=200&width=300" alt="">
+                            </div>
+                            <div class="photo-item">
+                                <img src="/placeholder.svg?height=200&width=300" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <!-- Added Payment Modal -->
+    <div id="payment-modal" class="payment-modal">
+        <div class="payment-modal-content">
+            <div class="payment-header">
+                <h2>Pesan Tiket Wisata</h2>
+                <button class="close-payment" onclick="closePaymentModal()">×</button>
+            </div>
+            
+            <div class="payment-steps">
+                <div class="step active" data-step="1">
+                    <span class="step-number">1</span>
+                    <span class="step-label">Pilih Destinasi</span>
+                </div>
+                <div class="step" data-step="2">
+                    <span class="step-number">2</span>
+                    <span class="step-label">Detail Pemesanan</span>
+                </div>
+                <div class="step" data-step="3">
+                    <span class="step-number">3</span>
+                    <span class="step-label">Pembayaran</span>
+                </div>
+                <div class="step" data-step="4">
+                    <span class="step-number">4</span>
+                    <span class="step-label">Konfirmasi</span>
+                </div>
+            </div>
+            
+            <div class="payment-body">
+                 Step 1: Destination Selection 
+                <div id="step-1" class="payment-step active">
+                    <h3>Pilih Destinasi Wisata</h3>
+                    <div class="destination-selection">
+                        <div class="destination-option" data-destination="kawah-putih">
+                            <img src="public/kawah-putih-crater-lake.jpg" alt="Kawah Putih">
+                            <div class="option-info">
+                                <h4>Kawah Putih</h4>
+                                <p>Danau kawah vulkanik yang menakjubkan</p>
+                                <div class="option-price">Rp 25.000 <span>/orang</span></div>
+                            </div>
+                            <input type="radio" name="destination" value="kawah-putih">
+                        </div>
+                        <div class="destination-option" data-destination="gedung-sate">
+                            <img src="public/gedung-sate-bandung-architecture.jpg" alt="Gedung Sate">
+                            <div class="option-info">
+                                <h4>Gedung Sate</h4>
+                                <p>Bangunan bersejarah ikon Bandung</p>
+                                <div class="option-price">Gratis</div>
+                            </div>
+                            <input type="radio" name="destination" value="gedung-sate">
+                        </div>
+                        <div class="destination-option" data-destination="trans-studio">
+                            <img src="public/trans-studio-bandung-theme-park.jpg" alt="Trans Studio">
+                            <div class="option-info">
+                                <h4>Trans Studio Bandung</h4>
+                                <p>Taman hiburan indoor terbesar</p>
+                                <div class="option-price">Rp 50.000 <span>/orang</span></div>
+                            </div>
+                            <input type="radio" name="destination" value="trans-studio">
+                        </div>
+                    </div>
+                </div>
+                
+                 Step 2: Booking Details 
+                <div id="step-2" class="payment-step">
+                    <h3>Detail Pemesanan</h3>
+                    <div class="booking-form">
+                        <div class="form-group">
+                            <label>Tanggal Kunjungan</label>
+                            <input type="date" id="visit-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Jumlah Pengunjung</label>
+                            <div class="quantity-selector">
+                                <button type="button" onclick="changeQuantity(-1)">-</button>
+                                <input type="number" id="visitor-count" value="1" min="1" max="10">
+                                <button type="button" onclick="changeQuantity(1)">+</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Nama Pemesan</label>
+                            <input type="text" id="booker-name" placeholder="Masukkan nama lengkap" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="booker-email" placeholder="email@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Nomor Telepon</label>
+                            <input type="tel" id="booker-phone" placeholder="08xxxxxxxxxx" required>
+                        </div>
+                        <div class="booking-summary">
+                            <h4>Ringkasan Pemesanan</h4>
+                            <div class="summary-item">
+                                <span>Destinasi:</span>
+                                <span id="summary-destination">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Tanggal:</span>
+                                <span id="summary-date">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Jumlah:</span>
+                                <span id="summary-quantity">1 orang</span>
+                            </div>
+                            <div class="summary-item total">
+                                <span>Total:</span>
+                                <span id="summary-total">Rp 0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                 Step 3: Payment 
+                <div id="step-3" class="payment-step">
+                    <h3>Metode Pembayaran</h3>
+                    <div class="payment-methods">
+                        <div class="payment-method" data-method="bank-transfer">
+                            <div class="method-icon">🏦</div>
+                            <div class="method-info">
+                                <h4>Transfer Bank</h4>
+                                <p>BCA, Mandiri, BNI, BRI</p>
+                            </div>
+                            <input type="radio" name="payment-method" value="bank-transfer">
+                        </div>
+                        <div class="payment-method" data-method="e-wallet">
+                            <div class="method-icon">📱</div>
+                            <div class="method-info">
+                                <h4>E-Wallet</h4>
+                                <p>GoPay, OVO, DANA, ShopeePay</p>
+                            </div>
+                            <input type="radio" name="payment-method" value="e-wallet">
+                        </div>
+                        <div class="payment-method" data-method="credit-card">
+                            <div class="method-icon">💳</div>
+                            <div class="method-info">
+                                <h4>Kartu Kredit</h4>
+                                <p>Visa, Mastercard, JCB</p>
+                            </div>
+                            <input type="radio" name="payment-method" value="credit-card">
+                        </div>
+                        <div class="payment-method" data-method="qris">
+                            <div class="method-icon">📲</div>
+                            <div class="method-info">
+                                <h4>QRIS</h4>
+                                <p>Scan QR untuk pembayaran</p>
+                            </div>
+                            <input type="radio" name="payment-method" value="qris">
+                        </div>
+                    </div>
+                    
+                    <div id="payment-details" class="payment-details" style="display: none;">
+                         Payment method specific details will be shown here 
+                    </div>
+                </div>
+                
+                 Step 4: Confirmation 
+                <div id="step-4" class="payment-step">
+                    <div class="confirmation-content">
+                        <div class="success-icon">✅</div>
+                        <h3>Pembayaran Berhasil!</h3>
+                        <p>Terima kasih atas pemesanan Anda. E-ticket telah dikirim ke email Anda.</p>
+                        
+                        <div class="ticket-info">
+                            <h4>Informasi Tiket</h4>
+                            <div class="ticket-details">
+                                <div class="ticket-item">
+                                    <span>Kode Booking:</span>
+                                    <span id="booking-code">-</span>
+                                </div>
+                                <div class="ticket-item">
+                                    <span>Destinasi:</span>
+                                    <span id="final-destination">-</span>
+                                </div>
+                                <div class="ticket-item">
+                                    <span>Tanggal:</span>
+                                    <span id="final-date">-</span>
+                                </div>
+                                <div class="ticket-item">
+                                    <span>Jumlah:</span>
+                                    <span id="final-quantity">-</span>
+                                </div>
+                                <div class="ticket-item">
+                                    <span>Total Bayar:</span>
+                                    <span id="final-total">-</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="confirmation-actions">
+                            <button class="download-ticket-btn" onclick="downloadTicket()">
+                                📄 Download E-Ticket
+                            </button>
+                            <button class="view-history-btn" onclick="showPaymentHistory()">
+                                📋 Lihat Riwayat
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="payment-footer">
+                <button id="prev-btn" class="btn-secondary" onclick="previousStep()" style="display: none;">
+                    ← Sebelumnya
+                </button>
+                <button id="next-btn" class="btn-primary" onclick="nextStep()">
+                    Selanjutnya →
+                </button>
+            </div>
+        </div>
+    </div>
+
+     <!-- Added Payment History Modal -->
+    <div id="payment-history-modal" class="payment-modal">
+        <div class="payment-modal-content">
+            <div class="payment-header">
+                <h2>Riwayat Pemesanan</h2>
+                <button class="close-payment" onclick="closePaymentHistory()">×</button>
+            </div>
+            
+            <div class="history-filters">
+                <button class="filter-btn active" data-filter="all">Semua</button>
+                <button class="filter-btn" data-filter="completed">Selesai</button>
+                <button class="filter-btn" data-filter="pending">Menunggu</button>
+                <button class="filter-btn" data-filter="cancelled">Dibatalkan</button>
+            </div>
+            
+            <div class="history-list">
+                <div class="history-item completed">
+                    <div class="history-info">
+                        <h4>Kawah Putih</h4>
+                        <p>Kode: BWG001234</p>
+                        <p>Tanggal: 15 Desember 2024</p>
+                        <p>2 orang</p>
+                    </div>
+                    <div class="history-status">
+                        <span class="status completed">Selesai</span>
+                        <div class="history-total">Rp 50.000</div>
+                    </div>
+                    <div class="history-actions">
+                        <button class="btn-small" onclick="downloadTicket('BWG001234')">Download</button>
+                        <button class="btn-small" onclick="viewTicketDetails('BWG001234')">Detail</button>
+                    </div>
+                </div>
+                
+                <div class="history-item pending">
+                    <div class="history-info">
+                        <h4>Trans Studio Bandung</h4>
+                        <p>Kode: BWG001235</p>
+                        <p>Tanggal: 20 Desember 2024</p>
+                        <p>1 orang</p>
+                    </div>
+                    <div class="history-status">
+                        <span class="status pending">Menunggu Pembayaran</span>
+                        <div class="history-total">Rp 50.000</div>
+                    </div>
+                    <div class="history-actions">
+                        <button class="btn-small primary" onclick="continuePayment('BWG001235')">Bayar</button>
+                        <button class="btn-small" onclick="cancelBooking('BWG001235')">Batal</button>
+                    </div>
+                </div>
+                
+                <div class="history-item completed">
+                    <div class="history-info">
+                        <h4>Museum Geologi</h4>
+                        <p>Kode: BWG001233</p>
+                        <p>Tanggal: 10 Desember 2024</p>
+                        <p>3 orang</p>
+                    </div>
+                    <div class="history-status">
+                        <span class="status completed">Selesai</span>
+                        <div class="history-total">Rp 45.000</div>
+                    </div>
+                    <div class="history-actions">
+                        <button class="btn-small" onclick="downloadTicket('BWG001233')">Download</button>
+                        <button class="btn-small" onclick="rateExperience('BWG001233')">Beri Rating</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+

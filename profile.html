@@ -1,0 +1,641 @@
+
+    <!-- 1. HEADER NAVIGASI: Bagian auth di nav menu dan dropdown user profile (muncul setelah login) -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">
+                <span class="logo-text">Bandung</span>
+                <span class="logo-accent">GIS</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#profile" class="nav-link">Profile</a></li>
+                <li><a href="#maps" class="nav-link">Maps</a></li>
+                <li><a href="#payment" class="nav-link">Payment</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+                <!-- Link login (hilang setelah login, diganti dropdown) -->
+                <li><a href="#login" class="nav-link" id="auth-nav-link" onclick="openAuthModal()">Login</a></li>
+            </ul>
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Cari destinasi...">
+                <button class="search-btn">🔍</button>
+            </div>
+            
+            <!-- Dropdown User Profile (tersembunyi sebelum login, muncul setelah login/register) -->
+            <div id="user-profile-dropdown" class="user-profile-dropdown" style="display: none;">
+                <div class="profile-avatar" onclick="toggleProfileDropdown()">
+                    <span id="user-avatar-text">U</span> <!-- Inisialisasi dengan inisial nama user -->
+                </div>
+               <div class="dropdown-divider"></div>
+                    <a href="#profile" class="dropdown-item" onclick="showUserProfile()">
+                        👤 Profil Saya
+                    </a>
+                    <a href="#payment" class="dropdown-item" onclick="showPaymentHistory()">
+                        📋 Riwayat Pemesanan (Akun Tersimpan)
+                    </a>
+                    <a href="#" class="dropdown-item" onclick="openSettingsModal()">
+                        ⚙️ Pengaturan
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item logout" onclick="logout()">
+                        🚪 Keluar (Logout)
+                    </a>
+
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- 2. MODAL AUTENTIKASI: Login, Register, dan Forgot Password -->
+    <div id="auth-modal" class="auth-modal">
+        <div class="auth-modal-content">
+            <div class="auth-header">
+                <h2 id="auth-title">Masuk ke Akun Anda</h2>
+                <button class="close-auth" onclick="closeAuthModal()">×</button>
+            </div>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login" onclick="switchAuthTab('login')">
+                    Masuk (Login)
+                </button>
+                <button class="auth-tab" data-tab="register" onclick="switchAuthTab('register')">
+                    Daftar (Register)
+                </button>
+            </div>
+            
+            <div class="auth-body">
+                <!-- Login Form -->
+                <div id="login-form" class="auth-form active">
+                    <form onsubmit="handleLogin(event)">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="login-email" placeholder="Masukkan email Anda" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <div class="password-input">
+                                <input type="password" id="login-password" placeholder="Masukkan password" required>
+                                <button type="button" class="toggle-password" onclick="togglePassword('login-password')">
+                                    👁️
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-options">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="remember-me">
+                                <span class="checkmark"></span>
+                                Ingat saya (Simpan sesi akun)
+                            </label>
+                            <a href="#" class="forgot-password" onclick="showForgotPassword()">
+                                Lupa password?
+                            </a>
+                        </div>
+                        <button type="submit" class="auth-btn primary">
+                            🔐 Masuk
+                        </button>
+                    </form>
+                    
+                    <div class="auth-divider">
+                        <span>atau masuk dengan</span>
+                    </div>
+                    
+                    <div class="social-login">
+                        <button class="social-btn google" onclick="loginWithGoogle()">
+                            <span class="social-icon">🔍</span>
+                            Google (OAuth)
+                        </button>
+                        <button class="social-btn facebook" onclick="loginWithFacebook()">
+                            <span class="social-icon">📘</span>
+                            Facebook (OAuth)
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Register Form -->
+                <div id="register-form" class="auth-form">
+                    <form onsubmit="handleRegister(event)">
+                        <div class="form-group">
+                            <label>Nama Lengkap</label>
+                            <input type="text" id="register-name" placeholder="Masukkan nama lengkap" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="register-email" placeholder="Masukkan email Anda" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Nomor Telepon</label>
+                            <input type="tel" id="register-phone" placeholder="08xxxxxxxxxx" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <div class="password-input">
+                                <input type="password" id="register-password" placeholder="Minimal 8 karakter" required>
+                                <button type="button" class="toggle-password" onclick="togglePassword('register-password')">
+                                    👁️
+                                </button>
+                            </div>
+                            <div class="password-strength" id="password-strength">
+                                <div class="strength-bar">
+                                    <div class="strength-fill"></div>
+                                </div>
+                                <span class="strength-text">Lemah</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Konfirmasi Password</label>
+                            <div class="password-input">
+                                <input type="password" id="register-confirm-password" placeholder="Ulangi password" required>
+                                <button type="button" class="toggle-password" onclick="togglePassword('register-confirm-password')">
+                                    👁️
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-options">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="agree-terms" required>
+                                <span class="checkmark"></span>
+                                Saya setuju dengan <a href="#" onclick="showTerms()">Syarat & Ketentuan</a>
+                            </label>
+                        </div>
+                        <button type="submit" class="auth-btn primary">
+                            ✨ Daftar Sekarang
+                        </button>
+                    </form>
+                    
+                    <div class="auth-divider">
+                        <span>atau daftar dengan</span>
+                    </div>
+                    
+                    <div class="social-login">
+                        <button class="social-btn google" onclick="registerWithGoogle()">
+                            <span class="social-icon">🔍</span>
+                            Google (OAuth)
+                        </button>
+                        <button class="social-btn facebook" onclick="registerWithFacebook()">
+                            <span class="social-icon">📘</span>
+                            Facebook (OAuth)
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Forgot Password Form -->
+                <div id="forgot-password-form" class="auth-form">
+                    <div class="forgot-password-content">
+                        <div class="forgot-icon">🔑</div>
+                        <h3>Lupa Password?</h3>
+                        <p>Masukkan email Anda dan kami akan mengirimkan link untuk reset password.</p>
+                        
+                        <form onsubmit="handleForgotPassword(event)">
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="forgot-email" placeholder="Masukkan email Anda" required>
+                            </div>
+                            <button type="submit" class="auth-btn primary">
+                                📧 Kirim Link Reset
+                            </button>
+                        </form>
+                        
+                        <button class="auth-btn secondary" onclick="switchAuthTab('login')">
+                            ← Kembali ke Login
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. MODAL SETTINGS AKUN: Pengelolaan profil, keamanan, dan preferensi (untuk akun yang sudah tersimpan) -->
+    <div id="settings-modal" class="auth-modal">
+        <div class="auth-modal-content">
+            <div class="auth-header">
+                <h2>Pengaturan Akun (Akun Tersimpan)</h2>
+                <button class="close-auth" onclick="closeSettingsModal()">×</button>
+            </div>
+            
+            <div class="settings-tabs">
+                <button class="settings-tab active" data-tab="profile" onclick="switchSettingsTab('profile')">
+                    Profil
+                </button>
+                <button class="settings-tab" data-tab="security" onclick="switchSettingsTab('security')">
+                    Keamanan
+                </button>
+                <button class="settings-tab" data-tab="preferences" onclick="switchSettingsTab('preferences')">
+                    Preferensi
+                </button>
+            </div>
+            
+            <div class="settings-body">
+                <!-- Profile Settings -->
+                <div id="profile-settings" class="settings-form active">
+                    <form onsubmit="updateProfile(event)">
+                        <div class="profile-avatar-section">
+                            <div class="avatar-preview">
+                                <span id="settings-avatar-text">U</span> <!-- Avatar dari data akun tersimpan -->
+                            </div>
+                            <div class="avatar-actions">
+                                <button type="button" class="btn-small" onclick="changeAvatar()">
+                                    Ubah Foto Profil
+                                </button>
+                                <button type="button" class="btn-small secondary" onclick="removeAvatar()">
+                                    Hapus Foto
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Nama Lengkap</label>
+                            <input type="text" id="settings-name" required> <!-- Pre-filled dari akun tersimpan -->
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="settings-email" required> <!-- Pre-filled dari akun tersimpan -->
+                        </div>
+                        <div class="form-group">
+                            <label>Nomor Telepon</label>
+                            <input type="tel" id="settings-phone"> <!-- Pre-filled dari akun tersimpan -->
+                        </div>
+                        <div class="form-group">
+                            <label>Tanggal Lahir</label>
+                            <input type="date" id="settings-birthdate"> <!-- Opsional, dari akun tersimpan -->
+                        </div>
+                        <div class="form-group">
+                            <label>Alamat</label>
+                            <textarea id="settings-address" rows="3" placeholder="Alamat lengkap"></textarea> <!-- Dari akun tersimpan -->
+                        </div>
+                        
+                        <button type="submit" class="auth-btn primary">
+                            💾 Simpan Perubahan Profil
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Security Settings -->
+                <div id="security-settings" class="settings-form">
+                    <form onsubmit="changePassword(event)">
+                        <h4>Ubah Password</h4>
+                        <div class="form-group">
+                            <label>Password Lama</label>
+                            <div class="password-input">
+                                <input type="password" id="current-password" required>
+                                <button type="button" class="toggle-password" onclick="togglePassword('current-password')">
+                                    👁️
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Password Baru</label>
+                            <div class="password-input">
+                                <input type="password" id="new-password" required>
+                                <button type="button" class="toggle-password" onclick="togglePassword('new-password')">
+                                    👁️
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Konfirmasi Password Baru</label>
+                            <div class="password-input">
+                                <input type="password" id="confirm-new-password" required>
+                                <button type="button" class="toggle-password" onclick="togglePassword('confirm-new-password')">
+                                    👁️
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="auth-btn primary">
+                            🔐 Ubah Password
+                        </button>
+                    </form>
+                    
+                    <div class="security-options">
+                        <h4>Opsi Keamanan Akun</h4>
+                        <div class="security-option">
+                            <div class="option-info">
+                                <strong>Autentikasi Dua Faktor (2FA)</strong>
+                                <p>Tambahkan lapisan keamanan ekstra untuk akun Anda</p>
+                            </div>
+                            <button class="btn-small" onclick="setup2FA()">
+                                Aktifkan 2FA
+                            </button>
+                        </div>
+                        <div class="security-option">
+                            <div class="option-info">
+                                <strong>Sesi Login</strong>
+                                <p>Kelola perangkat yang terhubung ke akun Anda (riwayat sesi tersimpan)</p>
+                            </div>
+                            <button class="btn-small" onclick="manageSessions()">
+                                Kelola Sesi
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Preferences Settings -->
+                <div id="preferences-settings" class="settings-form">
+                    <form onsubmit="updatePreferences(event)">
+                        <h4>Notifikasi Akun</h4>
+                        <div class="preference-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="email-notifications" checked>
+                                <span class="checkmark"></span>
+                                Notifikasi Email
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="booking-notifications" checked>
+                                <span class="checkmark"></span>
+                                Notifikasi Pemesanan (Terkait akun)
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="promo-notifications">
+                                <span class="checkmark"></span>
+                                Notifikasi Promo
+                            </label>
+                        </div>
+                        
+                        <h4>Tampilan & Preferensi</h4>
+                        <div class="preference-group">
+                            <div class="form-group">
+                                <label>Tema Favorit</label>
+                                <select id="favorite-theme">
+                                    <option value="default">Default</option>
+                                    <option value="alam">Alam</option>
+                                    <option value="budaya">Budaya</option>
+                                    <option value="rekreasi">Rekreasi</option>
+                                    <option value="kuliner">Kuliner</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Bahasa</label>
+                                <select id="language">
+                                    <option value="id">Bahasa Indonesia</option>
+                                    <option value="en">English</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="auth-btn primary">
+                            💾 Simpan Preferensi Akun
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. MODAL RIWAYAT AKUN (Payment History): Terkait akun tersimpan, menampilkan data pemesanan user -->
+<div id="payment-history-modal" class="payment-modal">
+    <div class="payment-modal-content">
+        <div class="payment-header">
+            <h2>Riwayat Pemesanan (Data Akun Tersimpan)</h2>
+            <button class="close-payment" onclick="closePaymentHistory()">×</button>
+        </div>
+        
+        <div class="history-filters">
+            <button class="filter-btn active" data-filter="all">Semua</button>
+            <button class="filter-btn" data-filter="completed">Selesai</button>
+            <button class="filter-btn" data-filter="pending">Menunggu</button>
+            <button class="filter-btn" data-filter="cancelled">Dibatalkan</button>
+        </div>
+        
+        <div class="history-list">
+            <!-- Contoh data riwayat pemesanan yang disimpan di akun user (bisa di-load dari localStorage atau backend) -->
+            <div class="history-item completed">
+                <div class="history-info">
+                    <h4>Kawah Putih</h4>
+                    <p>Kode: BWG001234</p>
+                    <p>Tanggal: 15 Desember 2024</p>
+                    <p>2 orang</p>
+                </div>
+                <div class="history-status">
+                    <span class="status completed">Selesai</span>
+                    <div class="history-total">Rp 50.000</div>
+                </div>
+                <div class="history-actions">
+                    <button class="btn-small" onclick="downloadTicket('BWG001234')">Download Tiket</button>
+                    <button class="btn-small" onclick="viewTicketDetails('BWG001234')">Detail</button>
+                </div>
+            </div>
+            
+            <div class="history-item pending">
+                <div class="history-info">
+                    <h4>Trans Studio Bandung</h4>
+                    <p>Kode: BWG001235</p>
+                    <p>Tanggal: 20 Desember 2024</p>
+                    <p>1 orang</p>
+                </div>
+                <div class="history-status">
+                    <span class="status pending">Menunggu Pembayaran</span>
+                    <div class="history-total">Rp 50.000</div>
+                </div>
+                <div class="history-actions">
+                    <button class="btn-small primary" onclick="continuePayment('BWG001235')">Bayar Sekarang</button>
+                    <button class="btn-small" onclick="cancelBooking('BWG001235')">Batal</button>
+                </div>
+            </div>
+            
+            <div class="history-item completed">
+                <div class="history-info">
+                    <h4>Museum Geologi</h4>
+                    <p>Kode: BWG001233</p>
+                    <p>Tanggal: 10 Desember 2024</p>
+                    <p>3 orang</p>
+                </div>
+                <div class="history-status">
+                    <span class="status completed">Selesai</span>
+                    <div class="history-total">Rp 45.000</div>
+                </div>
+                <div class="history-actions">
+                    <button class="btn-small" onclick="downloadTicket('BWG001233')">Download Tiket</button>
+                    <button class="btn-small" onclick="rateExperience('BWG001233')">Beri Rating</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tombol aksi tambahan untuk riwayat akun -->
+        <div class="history-actions-footer">
+            <button class="btn-secondary" onclick="exportHistory()">📊 Ekspor Riwayat</button>
+            <button class="btn-primary" onclick="clearHistory()">🗑️ Hapus Riwayat Lama</button>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- Script untuk handling dasar akun (demo dengan localStorage - bisa diganti dengan backend) -->
+<script>
+// Fungsi dasar untuk auth dan akun (integrasikan dengan 2script.js jika ada)
+// Simulasi data akun tersimpan
+let currentUser  = JSON.parse(localStorage.getItem('currentUser ')) || null;
+
+// 1. Buka modal auth (login/register)
+function openAuthModal() {
+    document.getElementById('auth-modal').style.display = 'flex';
+    document.getElementById('auth-title').textContent = 'Masuk ke Akun Anda';
+}
+
+// Tutup modal auth
+function closeAuthModal() {
+    document.getElementById('auth-modal').style.display = 'none';
+}
+
+// 2. Handle Login (simulasi)
+function handleLogin(event) {
+    event.preventDefault();
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    
+    // Simulasi validasi (ganti dengan API call)
+    if (email && password) {
+        // Simpan data user sementara
+        currentUser  = { email, name: 'User  Name', phone: '+62 812-3456-7890' };
+        localStorage.setItem('currentUser ', JSON.stringify(currentUser ));
+        
+        // Update UI: Sembunyikan login link, tampilkan dropdown
+        document.getElementById('auth-nav-link').style.display = 'none';
+        document.getElementById('user-profile-dropdown').style.display = 'block';
+        document.getElementById('user-name-display').textContent = currentUser .name;
+        document.getElementById('user-email-display').textContent = currentUser .email;
+        document.getElementById('user-avatar-text').textContent = currentUser .name.charAt(0);
+        
+        closeAuthModal();
+        alert('Login berhasil! Selamat datang, ' + currentUser .name);
+    } else {
+        alert('Email atau password salah!');
+    }
+}
+
+// 3. Handle Register (simulasi)
+function handleRegister(event) {
+    event.preventDefault();
+    const name = document.getElementById('register-name').value;
+    const email = document.getElementById('register-email').value;
+    const password = document.getElementById('register-password').value;
+    const confirmPassword = document.getElementById('register-confirm-password').value;
+    
+    if (password !== confirmPassword) {
+        alert('Password tidak cocok!');
+        return;
+    }
+    
+    // Simulasi registrasi
+    currentUser  = { name, email, phone: document.getElementById('register-phone').value };
+    localStorage.setItem('currentUser ', JSON.stringify(currentUser ));
+    
+    // Update UI seperti login
+    document.getElementById('auth-nav-link').style.display = 'none';
+    document.getElementById('user-profile-dropdown').style.display = 'block';
+    document.getElementById('user-name-display').textContent = currentUser .name;
+    document.getElementById('user-email-display').textContent = currentUser .email;
+    document.getElementById('user-avatar-text').textContent = currentUser .name.charAt(0);
+    
+    closeAuthModal();
+    alert('Registrasi berhasil! Akun Anda telah dibuat.');
+}
+
+// 4. Logout
+function logout() {
+    localStorage.removeItem('currentUser ');
+    currentUser  = null;
+    document.getElementById('auth-nav-link').style.display = 'block';
+    document.getElementById('user-profile-dropdown').style.display = 'none';
+    alert('Logout berhasil!');
+}
+
+// 5. Buka settings modal
+function openSettingsModal() {
+    if (!currentUser ) {
+        openAuthModal();
+        return;
+    }
+    document.getElementById('settings-modal').style.display = 'flex';
+    // Pre-fill form dengan data akun tersimpan
+    document.getElementById('settings-name').value = currentUser .name || '';
+    document.getElementById('settings-email').value = currentUser .email || '';
+    document.getElementById('settings-phone').value = currentUser .phone || '';
+}
+
+// Tutup settings modal
+function closeSettingsModal() {
+    document.getElementById('settings-modal').style.display = 'none';
+}
+
+// 6. Update Profile (simulasi)
+function updateProfile(event) {
+    event.preventDefault();
+    currentUser .name = document.getElementById('settings-name').value;
+    currentUser .email = document.getElementById('settings-email').value;
+    currentUser .phone = document.getElementById('settings-phone').value;
+    localStorage.setItem('currentUser ', JSON.stringify(currentUser ));
+    
+    // Update dropdown
+    document.getElementById('user-name-display').textContent = currentUser .name;
+    document.getElementById('user-avatar-text').textContent = currentUser .name.charAt(0);
+    
+    alert('Profil diperbarui!');
+    closeSettingsModal();
+}
+
+// 7. Toggle password visibility (umum untuk semua form)
+function togglePassword(inputId) {
+    const input = document.getElementById(inputId);
+    const toggleBtn = input.nextElementSibling;
+    if (input.type === 'password') {
+        input.type = 'text';
+        toggleBtn.textContent = '🙈';
+    } else {
+        input.type = 'password';
+        toggleBtn.textContent = '👁️';
+    }
+}
+
+// 8. Switch tabs (untuk auth dan settings)
+function switchAuthTab(tab) {
+    // Logika switch tab login/register/forgot (implementasikan di JS utama)
+    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+    // ... (sembunyikan/tampilkan form)
+}
+
+function switchSettingsTab(tab) {
+    // Logika switch tab profile/security/preferences
+    document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+    // ... (sembunyikan/tampilkan form)
+}
+
+// 9. Riwayat pemesanan (demo - load dari localStorage atau backend)
+function showPaymentHistory() {
+    if (!currentUser ) {
+        openAuthModal();
+        return;
+    }
+    document.getElementById('payment-history-modal').style.display = 'flex';
+    // Load riwayat dari storage (simulasi)
+    // const history = JSON.parse(localStorage.getItem('bookingHistory')) || [];
+}
+
+function closePaymentHistory() {
+    document.getElementById('payment-history-modal').style.display = 'none';
+}
+
+// Fungsi lain (stub untuk demo)
+function downloadTicket(code) { alert('Download tiket ' + code); }
+function viewTicketDetails(code) { alert('Detail tiket ' + code); }
+function continuePayment(code) { alert('Lanjut bayar ' + code); }
+function cancelBooking(code) { alert('Batal ' + code); }
+function rateExperience(code) { alert('Rate ' + code); }
+function exportHistory() { alert('Ekspor riwayat'); }
+function clearHistory() { alert('Hapus riwayat'); }
+function manageReviews() { alert('Kelola ulasan'); }
+function viewSavedLocation(id) { alert('Lihat ' + id); }
+function removeSaved(id) { alert('Hapus ' + id); }
+
+// Inisialisasi: Cek jika user sudah login
+if (currentUser ) {
+    document.getElementById('auth-nav-link').style.display = 'none';
+    document.getElementById('user-profile-dropdown').style.display = 'block';
+    document.getElementById('user-name-display').textContent = currentUser .name;
+    document.getElementById('user-email-display').textContent = currentUser .email;
+    document.getElementById('user-avatar-text').textContent = currentUser .name.charAt(0);
+}
+</script>
+

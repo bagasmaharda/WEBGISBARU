@@ -1,0 +1,102 @@
+/* Styling Umum */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #216161; /* Warna hijau tua/teal untuk latar belakang luar */
+    overflow: hidden; /* Mencegah scroll */
+}
+
+/* Container Latar Belakang - Menciptakan efek lingkaran dan gradien */
+.container-latar {
+    padding: 20px;
+    width: 90%;
+    max-width: 800px;
+    background: radial-gradient(circle at 10% 20%, #4CAF50 0%, #216161 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    position: relative;
+}
+
+/* Efek lingkaran di latar belakang */
+.container-latar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-radial-gradient(circle at 10% 10%, rgba(255, 255, 255, 0.1) 0px, rgba(255, 255, 255, 0) 30px);
+    pointer-events: none;
+    opacity: 0.5;
+    clip-path: circle(20% at 5% 5%), circle(15% at 20% 80%), circle(10% at 90% 10%);
+}
+
+/* Kartu Utama - Kotak Putih yang membungkus konten */
+.kartu-utama {
+    background-color: white;
+    padding: 30px;
+    border-radius: 15px;
+    width: 100%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+}
+
+/* Judul */
+.judul-kawah-putih {
+    color: #4CAF50; /* Warna hijau seperti di gambar */
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+    font-weight: bold;
+}
+
+/* Konten Peta - Flex container untuk tombol navigasi dan peta */
+.konten-peta {
+    display: flex;
+    gap: 10px; /* Jarak antara tombol navigasi dan peta */
+}
+
+/* Tombol Navigasi Samping */
+.tombol-navigasi {
+    width: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 10px; 
+}
+
+.kotak-tombol {
+    width: 30px;
+    height: 30px;
+    background-color: #d1d1d1; /* Warna abu-abu tombol */
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Area Peta */
+#area-peta {
+    flex-grow: 1; /* Mengambil sisa ruang */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden; /* Memastikan gambar peta tidak meluber */
+    background-color: #2c3e50; /* Warna gelap simulasi peta */
+    min-height: 400px; /* Tinggi minimum untuk area peta */
+}
+
+.gambar-peta {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Memastikan gambar menutupi area peta */
+    /* Untuk simulasi, beri filter agar lebih gelap seperti peta topografi */
+    filter: brightness(0.8) contrast(1.2); 
+}

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebGIS Pariwisata Bandung</title>
+
+    <link rel="stylesheet" href="../CSS/Kuliner.css">
+    
+
+     <link rel="stylesheet" href="./CSS/footer.css">
+
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+
+<body>
+<!-- HEADER -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">
+                <span class="logo-text">Bandung</span>
+                <span class="logo-accent">GIS</span>
+            </div>
+          <ul class="nav-menu">
+                <a href="../index.html" class="nav-profile">Home</a>    
+                <a href="./HTML/Profile.html" class="nav-profile">Profile</a>
+                <li><a href="#maps" class="nav-link">Maps</a></li>
+                <li><a href="#payment" class="nav-link">Payment</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+                <li><a href="#login" class="nav-link" id="auth-nav-link">Login</a></li>
+            </ul>
+
+
+            <!-- Search -->
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Cari destinasi...">
+                <button class="search-btn">🔍</button>
+            </div>
+    </header>
+
+<!-- HERO -->
+    <main>
+        <section class="hero">
+            <div class="bg">
+                <div class="circle"></div>
+                <div class="circle"></div>
+                <div class="circle"></div>
+            
+        
+            <!-- Tittle & Description -->
+            <h1>CULINARY OF BANDUNG </h1>
+            <p>Explore the charm of Bandung tourism from breathtaking natural landscapes, culinary delights, entertainment, 
+                and shopping malls to its rich cultural heritage all in one interactive digital map. 🌍</p>
+            
+            <!-- Button Start -->
+              <button class="cta-button" onclick="scrollToMaps()">Start Exploring</button>
+            </div>
+            <div class="floating-elements">
+                <div class="floating-element" style="--delay: 0s"></div>
+                <div class="floating-element" style="--delay: 2s"></div>
+                <div class="floating-element" style="--delay: 4s"></div>
+            </div>
+    </section>
+
+
+<!-- PANORAMA -->
+<section class="panorama-section">
+  <div class="panorama-content">
+    <div class="panorama-video">
+      <!-- Video background -->
+      <video id="bandungVideo" autoplay muted loop  class="video-bg" controls>
+        <source src="../Video/Img-Panorama.mp4" type="video/mp4">
+      </video>
+
+      <!-- Overlay efek gelap -->
+      <div class="video-overlay"></div>
+
+  </div>
+</section>
+
+
+
+ <section class="maps-section">
+    <h2>Interactive <span>Maps</span></h2>
+    
+    <div class="maps-card">
+      <div class="maps-info">
+        <h3>Culinary <span>Maps</span></h3>
+        <div class="rating">⭐⭐⭐⭐⭐</div>
+        <button id="lihatMapsBtn">Lihat Maps</button>
+      </div>
+      
+      <div id="map" class="maps-container"></div>
+    </div>
+  </section>
+
+<!-- TEAM SECTION -->
+<section class="team-section">
+  <h2 class="section-title">Choose Category</h2>
+
+  <!-- FILTERING KATEGORI & POPULARITY -->
+  <div class="filters-container">
+  <div class="filter-group">
+    <span>Category:</span>
+    <button class="filter-btn" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="waterfall">Waterfall</button>
+    <button class="filter-btn" data-filter="mountain">Mountain</button>
+    <button class="filter-btn" data-filter="scenery">Scenery</button>
+    <button class="filter-btn" data-filter="camp">Camp</button>
+  </div>
+
+  <div class="filter-group">
+    <span>Popularity:</span>
+    <button class="filter-btn" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="popular">Popular</button>
+    <button class="filter-btn" data-filter="most-visited">Most Visited</button>
+  </div>
+</div>
+
+  <div class="team-grid">
+
+    <div class="team-card" data-category="mountain" data-popularity="popular">
+      <div class="team-avatar" style="background-image: url('../Image/FotoWisataAlamBandung/Alam_KawahPutih1.jpg');"></div>
+      <h3>Kawah Putih</h3>
+      <a href="../HTML/KawahPutih.html" class="see-more">See More</a>
+    </div>
+    
+    <div class="team-card" data-category="mountain" data-popularity="most-visited">
+      <div class="team-avatar" style="background-image: url('../Image/FotoWisataAlamBandung/Alam_BukitJamurRancabolang.jpg');"></div>
+      <h3>Bukit Rancabolang</h3>
+      <a href="../HTML/KawahPutih.html" class="see-more">See More</a>
+    </div>
+
+    <div class="team-card" data-category="mountain" data-popularity="popular">
+      <div class="team-avatar" style="background-image: url('../Image/FotoWisataAlamBandung/Alam_CiherangRiverside1.jpg');"></div>
+      <h3>Ciherang Riverside</h3>
+      <a href="../HTML/KawahPutih.html" class="see-more">See More</a>
+    </div>
+
+    <div class="team-card" data-category="scenery" data-popularity="most-visited">
+      <div class="team-avatar" style="background-image: url('../Image/FotoWisataAlamBandung/Alam_CiherangRiverside1.jpg');"></div>
+      <h3>Ciherang Riverside 2</h3>
+      <a href="../HTML/KawahPutih.html" class="see-more">See More</a>
+    </div>
+
+    <div class="team-card" data-category="scenery" data-popularity="most-visited">
+      <div class="team-avatar" style="background-image: url('../Image/FotoWisataAlamBandung/Alam_CiherangRiverside1.jpg');"></div>
+      <h3>Ciherang Riverside 3</h3>
+      <a href="../HTML/KawahPutih.html" class="see-more">See More</a>
+    </div>
+
+    <div class="team-card" data-category="waterfall" data-popularity="most-visited">
+      <div class="team-avatar" style="background-image: url('../Image/FotoWisataAlamBandung/Alam_CiherangRiverside1.jpg');"></div>
+      <h3>Ciherang Riverside 4</h3>
+      <a href="../HTML/KawahPutih.html" class="see-more">See More</a>
+    </div>
+
+
+    <div class="team-card" data-category="waterfall" data-popularity="most-visited">
+      <div class="team-avatar" style="background-image: url('../Image/FotoWisataAlamBandung/Alam_CiherangRiverside1.jpg');"></div>
+      <h3>Ciherang Riverside 4</h3>
+      <a href="../HTML/KawahPutih.html" class="see-more">See More</a>
+    </div>
+
+    
+    <div class="team-card" data-category="waterfall" data-popularity="most-visited">
+      <div class="team-avatar" style="background-image: url('../Image/FotoWisataAlamBandung/Alam_CiherangRiverside1.jpg');"></div>
+      <h3>Ciherang Riverside 4</h3>
+      <a href="../HTML/KawahPutih.html" class="see-more">See More</a>
+    </div>
+
+
+    
+    <div class="team-card" data-category="waterfall" data-popularity="most-visited">
+      <div class="team-avatar" style="background-image: url('../Image/FotoWisataAlamBandung/Alam_CiherangRiverside1.jpg');"></div>
+      <h3>Ciherang Riverside 4</h3>
+      <a href="../HTML/KawahPutih.html" class="see-more">See More</a>
+    </div>
+
+    
+    <div class="team-card" data-category="waterfall" data-popularity="most-visited">
+      <div class="team-avatar" style="background-image: url('../Image/FotoWisataAlamBandung/Alam_CiherangRiverside1.jpg');"></div>
+      <h3>Ciherang Riverside 4</h3>
+      <a href="../HTML/KawahPutih.html" class="see-more">See More</a>
+    </div>
+
+
+
+  </div> <!-- tutup team-grid -->
+</section>
+
+
+
+
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+ 
+  <script src="../JS/nature.js"></script>
+
+</body>
+</html>

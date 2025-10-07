@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Routing Map Indonesia</title>
+  <!-- Tambahkan di dalam <head> atau sebelum script JS kamu -->
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+<style>
+  
+#map { height: 100vh; width: 100%; }
+/* Box controls futuristik memanjang ke samping */
+.controls {
+  position: absolute;   /* posisi relatif terhadap parent (map) */
+  top: 30px;            /* jarak dari atas */
+  left: 30%;            /* titik horizontal tengah */
+  transform: translateX(-15%);  /* geser setengah lebar ke kiri supaya benar-benar di tengah */
+
+  z-index: 1000;
+  background: rgba(20, 20, 30, 0.75);
+  padding: 12px 20px;
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(0,255,255,0.6), 0 0 30px rgba(0,128,255,0.4);
+  border: 1px solid rgba(0,255,255,0.6);
+  backdrop-filter: blur(20px);
+  display: flex;
+  flex-direction: row; /* memanjang ke samping */
+  align-items: center;
+  gap: 10px;
+  width: auto; /* menyesuaikan isi */
+  font-family: 'Arial', sans-serif;
+  font-weight: bold;
+  font-size: 15px;
+  color: #e9ffff;
+}
+
+
+/* Hover futuristik: zoom + glow */
+.controls:hover {
+  background: rgba(30, 30, 50, 0.85);
+  box-shadow: 
+    0 0 25px rgba(0, 255, 255, 0.529),
+    0 0 50px rgba(0, 128, 255, 0.358),
+    0 0 75px rgba(0, 255, 255, 0.23);
+ 
+}
+
+/* Tombol close ✖ */
+.controls .close-btn {
+  margin-left: 10px;
+  background: transparent;
+  border: none;
+  color: #0ff;
+  font-size: 16px;
+  cursor: pointer;
+  text-shadow: 0 0 5px #0ff;
+  transition: 0.3s all;
+}
+
+.controls .close-btn:hover {
+  color: #fff;
+  text-shadow: 0 0 10px #0ff;
+}
+
+/* Input & select futuristik memanjang ke samping */
+.controls input, .controls select {
+  padding: 8px;
+  width: 140px; /* lebih kecil */
+  border: none;
+  border-radius: 8px;
+  background: rgba(0,0,50,0.6);
+  color: rgb(245, 255, 255);
+  font-weight: 500;
+  outline: none;
+  box-shadow: 0 0 8px rgba(0,255,255,0.4) inset;
+  transition: 0.3s all;
+}
+
+.controls input:focus, .controls select:focus {
+  box-shadow: 0 0 12px rgba(0,255,255,0.8) inset;
+  background: rgba(0,0,60,0.8);
+}
+
+/* Button futuristik kecil */
+.controls button {
+  padding: 6px 20px;
+  border-radius: 8px;
+  background: linear-gradient(45deg, #00f6ff, #005fff);
+  color: #efff;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(0,255,255,0.6);
+  transition: 0.3s all;
+}
+
+.controls button:hover {
+  background: linear-gradient(45deg, #00ffff, #0088ff);
+  box-shadow: 0 0 20px rgba(0,255,255,0.8);
+}
+
+</style>
+
+</head>
+<body>
+<div class="controls">
+  <div>
+    <label>Asal :</label>
+    <input type="text" id="startLocation" placeholder="Ketik lokasi awal">
+    <div id="startSuggestions" class="suggestions"></div>
+  </div>
+  <div>
+    <label>Tujuan :</label>
+    <input type="text" id="endLocation" placeholder="Ketik tujuan">
+    <div id="endSuggestions" class="suggestions"></div>
+  </div>
+  <div>
+    <label>Kendaraan :</label>
+    <select id="vehicle">
+      <option value="car">Mobil</option>
+      <option value="motorbike">Motor</option>
+      <option value="foot">Jalan Kaki</option>
+    </select>
+  </div>
+  <button id="routeBtn">Rute</button>
+</div>
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+
+<script>
+// Map default Indonesia
+const map = L.map('map').setView([-2.548926, 118.0148634], 5);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OSM' }).addTo(map);
+
+// Fokus ke lokasi user
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(pos => {
+    const lat = pos.coords.latitude;
+    const lon = pos.coords.longitude;
+    map.setView([lat, lon], 13);
+    document.getElementById('startLocation').value = "Posisi Saya";
+    document.getElementById('startLocation').dataset.lat = lat;
+    document.getElementById('startLocation').dataset.lon = lon;
+  }, err => { console.log('Geolocation error:', err); });
+}
+
+// Autocomplete & suggestions
+async function getSuggestions(query) {
+  if(!query) return [];
+  const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=ID&limit=5`);
+  const data = await res.json();
+  return data.map(item => ({ name: item.display_name, coords: [parseFloat(item.lat), parseFloat(item.lon)] }));
+}
+
+function setupAutocomplete(inputId, suggestionsId) {
+  const input = document.getElementById(inputId);
+  const suggestionsDiv = document.getElementById(suggestionsId);
+  input.addEventListener('input', async () => {
+    const results = await getSuggestions(input.value);
+    suggestionsDiv.innerHTML = results.map(r => `<div class="suggestion-item" data-lat="${r.coords[0]}" data-lon="${r.coords[1]}">${r.name}</div>`).join('');
+  });
+  suggestionsDiv.addEventListener('click', e => {
+    if(e.target.classList.contains('suggestion-item')){
+      input.value = e.target.textContent;
+      input.dataset.lat = e.target.dataset.lat;
+      input.dataset.lon = e.target.dataset.lon;
+      suggestionsDiv.innerHTML = '';
+    }
+  });
+  return () => {
+    if(input.dataset.lat && input.dataset.lon) return [parseFloat(input.dataset.lat), parseFloat(input.dataset.lon)];
+    return null;
+  }
+}
+
+const getStartCoords = setupAutocomplete('startLocation', 'startSuggestions');
+const getEndCoords = setupAutocomplete('endLocation', 'endSuggestions');
+
+let routingControl;
+document.getElementById('routeBtn').addEventListener('click', () => {
+  const start = getStartCoords();
+  const end = getEndCoords();
+  const vehicle = document.getElementById('vehicle').value;
+
+  if(!start || !end) return alert('Pilih lokasi awal dan tujuan dari daftar saran');
+
+  if(routingControl) map.removeControl(routingControl);
+
+  routingControl = L.Routing.control({
+    waypoints: [L.latLng(start[0], start[1]), L.latLng(end[0], end[1])],
+    router: L.Routing.osrmv1({
+      serviceUrl: 'https://router.project-osrm.org/route/v1',
+      profile: vehicle // car, foot, motorbike
+    }),
+    routeWhileDragging: true,
+    lineOptions: { styles: [{ color: 'red', opacity: 0.7, weight: 5, dashArray: '10,6' }] },
+    createMarker: function(i, wp) { return L.marker(wp.latLng); }
+  }).addTo(map);
+
+  map.fitBounds([ L.latLng(start[0], start[1]), L.latLng(end[0], end[1]) ]);
+});
+
+// Base maps
+const baseMaps = {
+  "Peta": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OSM' }),
+  "Satelit": L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', { subdomains:['mt0','mt1','mt2','mt3'] }),
+};
+baseMaps["Peta"].addTo(map);
+L.control.layers(baseMaps).addTo(map);
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script>
+
+</script>
+
+</body>
+</html>

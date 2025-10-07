@@ -1,0 +1,64 @@
+
+/* Panorama Section */
+.panorama-section {
+  height: 60vh;
+  position: relative;
+  overflow: hidden;
+  margin:  0;
+}
+
+.panorama-content {
+  height: 100%;
+  position: relative;
+}
+
+.panorama-video {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.video-bg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* supaya full cover */
+  z-index: 1;
+}
+
+.video-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+  z-index: 2;
+}
+
+
+.play-button {
+  position: absolute;
+  z-index: 4;
+  background: rgba(99, 102, 241, 0.9);
+  color: white;
+  font-size: 2.2rem;
+  padding: 1rem 1.5rem;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  background: rgba(181, 125, 255, 0.15); /* transparan elegan */
+  backdrop-filter: blur(4px); /* efek kaca */
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.8),
+              0 0 30px rgba(99, 102, 241, 0.6);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.play-button:hover {
+    background: rgba(99,102,241,0.3);
+  transform: scale(1.1);
+  box-shadow: 0 0 20px #818cf8, 0 0 40px #a5b4fc;
+}

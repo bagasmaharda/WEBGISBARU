@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebGIS Pariwisata Bandung</title>
+
+    <link rel="stylesheet" href="./CSS/header.css">
+    <link rel="stylesheet" href="./CSS/hero.css">
+    <link rel="stylesheet" href="./CSS/Panorama.css">
+    <link rel="stylesheet" href="./CSS/Category.css">
+    <link rel="stylesheet" href="./CSS/Maps.css">
+    <link rel="stylesheet" href="./CSS/login.css">
+
+     <link rel="stylesheet" href="./CSS/footer.css">
+
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+
+<body>
+<!-- HEADER -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">
+                <span class="logo-text">Bandung</span>
+                <span class="logo-accent">GIS</span>
+            </div>
+          <ul class="nav-menu">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <a href="./HTML/Profile.html" class="nav-profile">Profile</a>
+                <li><a href="#maps" class="nav-link">Maps</a></li>
+                <li><a href="#payment" class="nav-link">Payment</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+                <li><a href="#login" class="nav-link" id="auth-nav-link">Login</a></li>
+            </ul>
+
+
+            <!-- Search -->
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Cari destinasi...">
+                <button class="search-btn">🔍</button>
+            </div>
+    </header>
+
+<!-- HERO -->
+    <main>
+        <section class="hero">
+            <div class="bg">
+                <div class="circle"></div>
+                <div class="circle"></div>
+                <div class="circle"></div>
+               
+
+            <!-- Toggle Dark/Light Mode -->
+            <div class="theme-switch">
+                <input type="checkbox" id="theme-toggle">
+                <label for="theme-toggle" class="switch"></label>
+            </div>
+        
+            <!-- Tittle & Description -->
+            <h1>EXPLORE THE WONDERS 
+                OF BANDUNG </h1>
+            <p>Explore the charm of Bandung tourism from breathtaking natural landscapes, culinary delights, entertainment, 
+                and shopping malls to its rich cultural heritage all in one interactive digital map. 🌍</p>
+            
+            <!-- Button Start -->
+              <button class="cta-button" onclick="scrollToMaps()">Start Exploring</button>
+            </div>
+            <div class="floating-elements">
+                <div class="floating-element" style="--delay: 0s"></div>
+                <div class="floating-element" style="--delay: 2s"></div>
+                <div class="floating-element" style="--delay: 4s"></div>
+            </div>
+    </section>
+
+
+<!-- CATEGORY -->
+   <section class="category-section">
+        <h2 class="section-title">Select Category</h2>
+        <p>Choose the type of tourist attraction you want</p>
+        <div class="category-grid">
+            <button class="category-card" data-category="alam" >
+                <div class="category-icon">🌿</div>
+                <a href="./HTML/Nature.html" class="see-more"><h3>Nature</h3></a>
+                <p>Explore Nature and Scenic Views</p>
+                <div class="category-blur-bg alam-blur"></div>
+            </button>
+
+            <button class="category-card" data-category="budaya" >
+                <div class="category-icon">🏛️</div>
+                <a href="./HTML/Budaya.html" class="see-more"><h3>Culture</h3></a>
+                <p>Discover Local Culture and Heritage</p>
+                <div class="category-blur-bg budaya-blur"></div>
+            </button>
+            <button class="category-card" data-category="rekreasi">
+                <div class="category-icon">🎢</div>
+                <a href="./HTML/Rekreasi.html" class="see-more"><h3>Recreation</h3></a>
+                <p> Enjoy Fun and Leisure Activities</p>
+                <div class="category-blur-bg rekreasi-blur"></div>
+            </button>
+            <button class="category-card" data-category="kuliner">
+                <div class="category-icon">🍜</div>
+                <a href="./HTML/Kuliner.html" class="see-more"><h3>Culinary</h3></a>
+                <p>Taste Authentic Local Culinary Delights</p>
+                <div class="category-blur-bg kuliner-blur"></div>
+            </button>
+        </div>
+    </section>
+
+
+     
+<!-- PANORAMA -->
+<section class="panorama-section">
+  <div class="panorama-content">
+    <div class="panorama-video">
+      <!-- Video background -->
+      <video id="bandungVideo" loop playsinline class="video-bg" controls>
+        <source src="./Video/Vid-Panorama.mp4" type="video/mp4">
+      </video>
+
+      <!-- Overlay efek gelap -->
+      <div class="video-overlay"></div>
+
+      <!-- Tombol Play/Pause -->
+      <button id="playBtn" class="play-button">▶</button>
+    </div>
+  </div>
+</section>
+
+
+<!-- INTERACTIVE MAPS -->
+<section id="maps" class="maps-section">
+        <div class="maps-header">
+            <h2 class="section-title">Peta Interaktif Bandung</h2>
+            <button class="fullscreen-btn" onclick="openFullscreenMap()">Lihat Peta Penuh</button>
+        </div>
+        
+        <div class="maps-container">
+            <div class="map-filters">
+                <button class="filter-btn active" data-filter="all">Semua</button>
+                <button class="filter-btn" data-filter="alam">🌿 Alam</button>
+                <button class="filter-btn" data-filter="budaya">🏛️ Budaya</button>
+                <button class="filter-btn" data-filter="rekreasi">🎢 Rekreasi</button>
+                <button class="filter-btn" data-filter="kuliner">🍜 Kuliner</button>
+            </div>
+            <div id="map" class="map"></div>
+
+            
+            <!-- Added floating route button -->
+            <button id="floating-route-btn" class="floating-route-btn" onclick="showRoutePanel()" style="display: none;">
+                <span class="route-icon">🗺️</span>
+                Lihat Rute
+            </button>
+        </div>
+
+         <!-- Enhanced location info panel with more details -->
+        <div id="location-panel" class="location-panel">
+            <button class="close-panel" onclick="closeLocationPanel()">×</button>
+            <div class="location-content">
+                <div class="location-gallery">
+                    <img id="location-image" src="public/kawah-putih-crater-lake.jpg" alt="">
+                    <div class="image-overlay">
+                        <button class="gallery-btn" onclick="openImageGallery()">📷 Lihat Galeri</button>
+                    </div>
+                </div>
+                <div class="location-info">
+                    <h3 id="location-name"></h3>
+                    <div class="location-rating">
+                        <div class="stars-container">
+                            <span id="location-stars"></span>
+                            <span id="location-rating-text"></span>
+                        </div>
+                        <button class="reviews-btn" onclick="showReviews()">Lihat Ulasan</button>
+                    </div>
+                    <p id="location-category" class="category-badge"></p>
+                    <p id="location-description"></p>
+                    
+                    <div class="location-details">
+                        <div class="detail-item">
+                            <strong>📍 Alamat:</strong> 
+                            <span id="location-address"></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>🕒 Jam Operasional:</strong> 
+                            <span id="location-hours"></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>📞 Kontak:</strong> 
+                            <span id="location-contact"></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>🌐 Koordinat:</strong> 
+                            <span id="location-coordinates"></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>💰 Harga Tiket:</strong> 
+                            <span id="location-price"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="route-btn primary" onclick="showRoutePanel()">🗺️ Lihat Rute</button>
+                        <button class="see-more-btn" onclick="showLocationFullscreen()">👁️ Lihat Selengkapnya</button>
+                        <button class="book-ticket-btn" onclick="openPaymentModal()">🎫 Pesan Tiket</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+         <!-- Added routing panel -->
+        <div id="routing-panel" class="routing-panel">
+            <button class="close-panel" onclick="closeRoutingPanel()">×</button>
+            <div class="routing-content">
+                <h3>Perencanaan Rute</h3>
+                <div class="route-form">
+                    <div class="input-group">
+                        <label>📍 Titik Asal</label>
+                        <input type="text" id="origin-input" placeholder="Masukkan lokasi asal Anda...">
+                        <button class="location-btn" onclick="getCurrentLocation()">📱 Lokasi Saya</button>
+                    </div>
+                    
+                    <div class="route-swap">
+                        <button onclick="swapLocations()">🔄</button>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>🎯 Tujuan</label>
+                        <input type="text" id="destination-input" readonly>
+                    </div>
+                    
+                    <div class="route-options">
+                        <label>🚗 Mode Transportasi</label>
+                        <select id="transport-mode">
+                            <option value="driving">Mobil</option>
+                            <option value="walking">Jalan Kaki</option>
+                            <option value="cycling">Sepeda</option>
+                        </select>
+                    </div>
+                    
+                    <button class="calculate-route-btn" onclick="calculateRoute()">
+                        🧭 Hitung Rute
+                    </button>
+                </div>
+                
+                <div id="route-results" class="route-results" style="display: none;">
+                    <div class="route-summary">
+                        <div class="route-stat">
+                            <span class="stat-icon">📏</span>
+                            <div>
+                                <span class="stat-label">Jarak</span>
+                                <span id="route-distance" class="stat-value">-</span>
+                            </div>
+                        </div>
+                        <div class="route-stat">
+                            <span class="stat-icon">⏱️</span>
+                            <div>
+                                <span class="stat-label">Waktu</span>
+                                <span id="route-duration" class="stat-value">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="route-instructions">
+                        <h4>Petunjuk Arah</h4>
+                        <div id="route-steps"></div>
+                    </div>
+                    
+                    <button class="start-navigation-btn" onclick="startNavigation()">
+                        🧭 Mulai Navigasi
+                    </button>
+                </div>
+            </div>
+        </div>
+    
+</section>
+
+
+<!--footer--> 
+    <footer id="contact" class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Hubungi Kami</h3>
+                <div class="contact-links">
+                    <a href="#" class="contact-link">📧 info@bandunggis.id</a>
+                    <a href="#" class="contact-link">📱 +62 812-3456-7890</a>
+                    <a href="#" class="contact-link">📍 Bandung, Jawa Barat</a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Media Sosial</h3>
+                <div class="social-links">
+                    <a href="#" class="social-link">Instagram</a>
+                    <a href="#" class="social-link">LinkedIn</a>
+                    <a href="#" class="social-link">Twitter</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 WebGIS Pariwisata Bandung. All rights reserved.</p>
+        </div>
+    </footer>
+
+
+
+
+
+
+
+<!-- Scripts -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- Leaflet Routing Machine JS -->
+<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+<script src="./JS/Maps.js"></script> <!-- Tambahan JS untuk Maps -->
+
+
+
+
+
+
+
+
+
+
+
+    <script src="./JS/login.js"></script>
+    <script src="./JS/buttonmode.js"></script>
+    <script src="./JS/PlayPanorama.js"></script>
+    <script src="./JS/theme.js"></script>
+    <script src="./JS/gotopage.js"></script>
+    <script src="./JS/Maps.js"></script>
+    <script src="./JS/scrollmaps.js"></script>
+
+
+</body>
+</html>
+
+
