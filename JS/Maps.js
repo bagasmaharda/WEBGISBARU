@@ -839,6 +839,7 @@ function calculateRoute() {
 function calculateMockDuration(distance, mode) {
   const speeds = {
     driving: 40, // km/h
+    motorcycle: 30, // km/h (nilai perkiraan)
     walking: 5, // km/h
     cycling: 15, // km/h
   }
