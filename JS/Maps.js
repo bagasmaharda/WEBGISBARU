@@ -750,28 +750,13 @@ function showRoutePanel() {
     return
   }
 
-  const routingPanel = document.getElementById("routing-panel")
-  const locationPanel = document.getElementById("location-panel")
+  // Simpan data destinasi ke localStorage
+  localStorage.setItem('destination', destinationName);
+  localStorage.setItem('destinationLat', destinationLat);
+  localStorage.setItem('destinationLon', destinationLon);
 
-  // Close location panel and open routing panel
-  locationPanel.classList.remove("active")
-  routingPanel.classList.add("active")
-
-  // Set destination
-  document.getElementById("destination-input").value = selectedLocation.name
-}
-
-function closeRoutingPanel() {
-  document.getElementById("routing-panel").classList.remove("active")
-
-  // Clear route if exists
-  if (currentRoute && map.hasLayer(currentRoute)) {
-    map.removeLayer(currentRoute)
-    currentRoute = null
-  }
-
-  // Hide route results
-  document.getElementById("route-results").style.display = "none"
+  // Buka halaman routing.html
+  window.open('../HTML/routing.html', '_blank');
 }
 
 function getCurrentLocation() {
@@ -816,45 +801,70 @@ function calculateRoute() {
 
   console.log("[v0] Calculating route from", originInput, "to", destinationInput)
 
-  // Simulate route calculation (in real app, use routing service)
-  setTimeout(() => {
-    const mockDistance = (Math.random() * 50 + 5).toFixed(1)
-    const mockDuration = calculateMockDuration(mockDistance, transportMode)
+  // Ambil koordinat dari data-attribute
+  const startLat = document.getElementById('startLocation').dataset.lat;
+  const startLon = document.getElementById('startLocation').dataset.lon;
+  const endLat = document.getElementById('endLocation').dataset.lat;
+  const endLon = document.getElementById('endLocation').dataset.lon;
 
-    // Show results
-    document.getElementById("route-distance").textContent = `${mockDistance} km`
-    document.getElementById("route-duration").textContent = mockDuration
-    document.getElementById("route-results").style.display = "block"
+  // Hapus rute sebelumnya
+  if (routingControl) {
+    map.removeControl(routingControl);
+  }
 
-    // Generate mock route steps
-    generateMockRouteSteps()
+  // Tentukan profil routing berdasarkan mode transportasi
+  let profile;
+  switch (transportMode) {
+    case 'driving':
+    case 'motorcycle':
+      profile = 'car';
+      break;
+    case 'walking':
+      profile = 'foot';
+      break;
+    case 'cycling':
+      profile = 'bike';
+      break;
+    default:
+      profile = 'car';
+  }
 
-    // Draw route on map
-    drawRouteOnMap()
-
-    console.log("[v0] Route calculated successfully")
-  }, 1500)
+  // Menghitung rute dengan rute alternatif diaktifkan
+  routingControl = L.Routing.control({
+    waypoints: [L.latLng(startLat, startLon), L.latLng(endLat, endLon)],
+    router: L.Routing.osrmv1({
+      serviceUrl: 'https://router.project-osrm.org/route/v1',
+      profile: profile,
+      alternatives: true // PENTING: Mengaktifkan rute alternatif
+    }),
+    lineOptions: { styles: [{ color: 'blue', weight: 5 }] },
+    altLineOptions: { styles: [{ color: 'grey', weight: 3 }] },
+  }).addTo(map);
 }
 
 function calculateMockDuration(distance, mode) {
-  const speeds = {
-    driving: 40, // km/h
-    motorcycle: 30, // km/h (nilai perkiraan)
-    walking: 5, // km/h
-    cycling: 15, // km/h
-  }
+    const speeds = {
+        car: 35, // Kecepatan mobil (km/jam)
+        motorcycle: 45, // Kecepatan motor (km/jam) - tercepat
+        foot: 10, // Kecepatan jalan kaki (km/jam)
+    };
+    
+    if (!speeds[mode]) {
+        console.error(`Mode kendaraan tidak valid: ${mode}`);
+        return "NaN jam";
+    }
 
-  const hours = Number.parseFloat(distance) / speeds[mode]
+    const hours = Number.parseFloat(distance) / speeds[mode];
+    const totalMinutes = hours * 60;
 
-  if (hours < 1) {
-    return `${Math.round(hours * 60)} menit`
-  } else {
-    const h = Math.floor(hours)
-    const m = Math.round((hours - h) * 60)
-    return m > 0 ? `${h} jam ${m} menit` : `${h} jam`
-  }
+    if (totalMinutes < 60) {
+        return `${Math.round(totalMinutes)} menit`;
+    } else {
+        const h = Math.floor(totalMinutes / 60);
+        const m = Math.round(totalMinutes % 60);
+        return m > 0 ? `${h} jam ${m} menit` : `${h} jam`;
+    }
 }
-
 function generateMockRouteSteps() {
   const steps = [
     "Mulai dari titik asal",
